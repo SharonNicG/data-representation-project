@@ -1,0 +1,288 @@
+<html>
+	<head>
+		<title>Biscuits</title>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	</head>
+	
+	<style>
+	/* Body margin of 20px with font-family */
+	body{
+		font-family: Comic Arial, Helvetica, sans-serif, cursive, sans-serif; background-color: #FFFFFF;
+		}
+		
+	</style>
+	
+	<body>
+        <div class="top">
+            <a class="active" href="login.html">Login</a>
+            <a href="webapplication.html">Biscuit Shop</a>
+        </div>
+	<br>
+	
+		<h1>Biscuits</h1>
+		<div>
+			<button id="showCreateButton" onclick="showCreate()">Create</button>
+		</div>
+		<br/>
+		
+		<div>
+			<table class="table" id="biscuitTable">
+				<tr class="tr">
+					<th>Name</th>
+					<th>Flavour</th>
+					<th>Size</th>
+					<th>Update</th>	
+					<th>Delete</th>
+				</tr>
+			</table>
+		</div>
+		
+		<div class="container" id='createUpdateForm' style="display: none">
+			<h2><span id="createlabel">Create an</span> <span id="updatelabel">Update this</span> Biscuits</h2>
+			<div class="row">
+				<div class="col-75">
+					<input type="hidden" name="id">
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-25">
+					<label for="fname">Name</label>
+				</div>
+				<div class="col-75">
+					<input class="type="text" name="name">
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-25">
+					<label for="fname">Flavour</label>
+				</div>
+				<div class="col-75">
+					<select name="flavour">
+								<option value="Lamb">Lamb</option>
+								<option value="Chicken">Chicken</option>
+								<option value="Beef">Beef</option>
+								<option value="Pork">Pork</option>
+						   </select>
+				</div>
+			</div>	
+
+			<div class="row">
+				<div class="col-25">
+					<label for="fname">Size</label>
+				</div>
+                <div class="col-75">
+                        <select name="size">
+                                    <option value="Small">Small</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="Large">Large</option>
+                            </select>
+				</div>
+			</div>
+			
+			<span><button id="doCreateButton" onclick="doCreate()">Create</button></span>
+			<span><button id="doUpdateButton" onclick="doUpdate()">Update</button></span>
+		</div>	
+	</body>
+	<script>
+	function showCreate(){
+		document.getElementById('showCreateButton').style.display="none"
+		document.getElementById('biscuitTable').style.display="none"
+		document.getElementById('createUpdateForm').style.display="block"
+		
+		document.getElementById('createlabel').style.display="inline"
+		document.getElementById('updatelabel').style.display="none"
+		
+		document.getElementById('doCreateButton').style.display="block"
+		document.getElementById('doUpdateButton').style.display="none"
+	}
+	
+	
+	function showViewAll() {
+		document.getElementById('showCreateButton').style.display="block"
+		document.getElementById('biscuitTable').style.display="inline"
+			
+		document.getElementById('createUpdateForm').style.display="none"
+		
+	}
+	
+	function showUpdate(buttonElement){
+		document.getElementById('showCreateButton').style.display="none"
+		document.getElementById('biscuitTable').style.display="none"
+		document.getElementById('createUpdateForm').style.display="block"
+		
+		document.getElementById('createlabel').style.display="none"
+		document.getElementById('updatelabel').style.display="inline"
+		
+		document.getElementById('doCreateButton').style.display="none"
+		document.getElementById('doUpdateButton').style.display="block"
+		
+		var rowElement = buttonElement.parentNode.parentNode
+		var Biscuits = getBiscuitsFromRow(rowElement)
+		populateFormWithBiscuits(Biscuits)
+	}
+	function doCreate(){	
+		var form = document.getElementById('createUpdateForm')
+		
+		var biscuits = {}
+		biscuits.name = form.querySelector('input[name="name"]').value
+		biscuits.flavour =	form.querySelector('select[name="flavour"]').value
+		biscuits.size = form.querySelector('input[name="size"]').value
+		console.log(JSON.stringify(biscuits))
+		host=window.location.origin
+		
+			
+		
+			 $.ajax({
+						 "url": host+"/biscuits",
+						 "method":"POST",
+						 "data":JSON.stringify(biscuits),
+						 "dataType": "JSON",
+						 contentType: "application/json; charset=utf-8",
+						 "success":function(result){
+							console.log(result);
+							biscuits.id = result.id
+							addBiscuitsToTable(biscuits)
+							clearForm()
+							showViewAll()
+							
+					 },
+					 
+						 "error":function(xhr,status,error){
+							console.log("error: "+status+" msg:"+error);
+					 }
+				 });
+		
+		
+	}
+	
+	function doUpdate(){
+		var biscuits = getBiscuitsFromForm();
+		var rowElement = document.getElementById(biscuits.id);
+		host=window.location.origin
+			$.ajax({
+                    "url":host+"biscuits/"+encodeURI(biscuits.id),
+                    "method":"PUT",
+                    "data":JSON.stringify(biscuits),
+                    "dataType": "JSON",
+                    contentType: "application/json; charset=utf-8",
+                    "success":function(result){
+                        console.log(result);
+                        
+                    },
+                    "error":function(xhr,status,error){
+                        console.log("error: "+status+" msg:"+error);
+                    }
+				 });
+		setBiscuitsInRow(rowElement, biscuits);
+		clearForm();
+		showViewAll();
+	}
+	function doDelete(r){
+		var tableElement = document.getElementById('biscuitsTable');
+		var rowElement = r.parentNode.parentNode;
+		var index = rowElement.rowIndex;
+		host=window.location.origin
+			$.ajax({
+						 "url":host+"/biscuits/"+encodeURI(artist.id),
+						 "method":"DELETE",
+						 "data":"",
+						 "dataType": "JSON",
+						 contentType: "application/json; charset=utf-8",
+						 "success":function(result){
+							console.log(result);
+							
+					 },
+						 "error":function(xhr,status,error){
+							console.log("error: "+status+" msg:"+error);
+					 }
+				 });
+		tableElement.deleteRow(index);
+	}
+	
+	
+	function clearForm(){
+		var form = document.getElementById('createUpdateForm')
+		
+		form.querySelector('input[name="name"]').value =''
+		form.querySelector('select[name="flavour"]').value =''
+		form.querySelector('input[name="size"]').value =''
+	}
+	function addBiscuitsToTable(biscuits){
+		var tableElement = document.getElementById('BiscuitsTable')
+		var rowElement = tableElement.insertRow(-1)
+		rowElement.setAttribute('id',biscuits.id)
+		var cell1 = rowElement.insertCell(0);
+		cell1.innerHTML = biscuits.id
+		var cell2 = rowElement.insertCell(1);
+		cell2.innerHTML = biscuits.name
+		var cell3 = rowElement.insertCell(2);
+		cell3.innerHTML = biscuits.flavour
+		var cell4 = rowElement.insertCell(3);
+		cell4.innerHTML = biscuits.size
+		var cell5 = rowElement.insertCell(4);
+		cell5.innerHTML = '<button onclick="showUpdate(this)">Update</button>'
+		var cell6 = rowElement.insertCell(5);
+		cell6.innerHTML = '<button onclick="doDelete(this)">Delete</button>'
+	}
+	function getBiscuitsFromRow(rowElement){
+		var biscuits ={}
+		biscuits.id = rowElement.getAttribute('id')
+		biscuits.name = rowElement.cells[1].firstChild.textContent
+		biscuits.flavour = rowElement.cells[2].firstChild.textContent
+		biscuits.size = parseInt(rowElement.cells[3].firstChild.textContent,10)
+		return biscuits
+	}
+	function populateFormWithBiscuits(biscuits){
+		var form = document.getElementById('createUpdateForm')
+        form.querySelector('input[name="id"]').disabled = true
+		
+		form.querySelector('input[name="id"]').value = biscuits.id
+		form.querySelector('input[name="name"]').value = biscuits.name
+		form.querySelector('select[name="flavour"]').value = biscuits.flavour
+		form.querySelector('input[name="size"]').value = biscuits.size
+		return biscuits
+	}
+	function getBiscuitsFromForm(){
+		var form = document.getElementById('createUpdateForm')
+		var biscuits = {}
+		biscuits.id = form.querySelector('input[name="id"]').value
+		biscuits.name = form.querySelector('input[name="name"]').value
+		biscuits.flavour = form.querySelector('select[name="flavour"]').value
+		biscuits.size = parseInt(form.querySelector('input[name="size"]').value,10)
+		console.log(JSON.stringify(biscuits))
+		return biscuits
+	}
+	function setBiscuitsInRow(rowElement, biscuits){
+		rowElement.cells[0].firstChild.textContent= biscuits.id
+		rowElement.cells[1].firstChild.textContent= biscuits.name
+		rowElement.cells[2].firstChild.textContent= biscuits.flavour
+		rowElement.cells[3].firstChild.textContent= biscuits.size
+	
+	}
+	
+	function getAll(){
+	host=window.location.origin
+                $.ajax({
+                    "url": host+"/biscuits",
+                    "method": "GET",
+                    "data": "",
+                    "dataType": "JSON",
+                    "success": function (result) {
+                        //console.log(result);
+                        for(biscuits of result){
+                            addBiscuitsToTable(artist);
+                        }
+                    },
+                    "error": function (xhr, status, error) {
+                        console.log("error: " + status + " msg:" + error);
+                    }
+                });
+            }
+    getAll();
+	
+	
+	
+	</script>
+</html>
