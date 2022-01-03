@@ -2,29 +2,27 @@
 	<head>
 		<title>Biscuits</title>
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+		<link rel="stylesheet" href="grooming.css">
 	</head>
 	
-	<style>
-	/* Body margin of 20px with font-family */
-	body{
-		font-family: Comic Arial, Helvetica, sans-serif, cursive, sans-serif; background-color: #FFFFFF;
-		}
+	<body id="home">
+        <nav class="menu">
+			<ul>
+				<li><a href="My%20Homepage.html">Home</a></li>
+				<li><a href="contact.html">Contact</a></li>
+				<li><a href="login.html">Login</a></li>
+			</ul>
+        </nav>
+	
+		<div id="logo">
+			<div class="logo-mark"><img src="dog-food.png"></div>
+			<div><h1>Woof<br>Biscuits</h1></div>
+		</div>
 		
-	</style>
-	
-	<body>
-        <div class="top">
-            <a class="active" href="login.html">Login</a>
-            <a href="webapplication.html">Biscuit Shop</a>
-        </div>
-	<br>
-	
-		<h1>Biscuits</h1>
-		<div>
+		<div class="createButton">
 			<button id="showCreateButton" onclick="showCreate()">Create</button>
 		</div>
-		<br/>
 		
 		<div>
 			<table class="table" id="biscuitTable">
@@ -38,19 +36,44 @@
 			</table>
 		</div>
 		
-		<div class="container" id='createUpdateForm' style="display: none">
-			<h2><span id="createlabel">Create an</span> <span id="updatelabel">Update this</span> Biscuits</h2>
+		<div class="container" id='createUpdateForm' style="display:none;">
+			<h2><span id="createlabel">Create </span><span id="updatelabel">Update this</span>Biscuits</h2>
 			<div class="row">
 				<div class="col-75">
 					<input type="hidden" name="id">
 				</div>
 			</div>
+			
+		<form>
+			<div>
+				<label for="fname">Name</label><br>
+				<input type="text" name="name">
+			</div>
+			<div>
+				<label for="fname">Flavour</label><br>
+				<select name="flavour">
+					<option value="Lamb">Lamb</option>
+					<option value="Chicken">Chicken</option>
+					<option value="Beef">Beef</option>
+					<option value="Pork">Pork</option>
+			   </select>
+			</div>
+		   <div>
+			   <label for="fname">Size</label><br>
+			   <select name="size">
+					<option value="Small">Small</option>
+					<option value="Medium">Medium</option>
+					<option value="Large">Large</option>
+				</select>
+			</div>
+		</form>
+			<!--
 			<div class="row">
 				<div class="col-25">
 					<label for="fname">Name</label>
 				</div>
 				<div class="col-75">
-					<input class="type="text" name="name">
+					<input type="text" name="name">
 				</div>
 			</div>
 			
@@ -60,11 +83,11 @@
 				</div>
 				<div class="col-75">
 					<select name="flavour">
-								<option value="Lamb">Lamb</option>
-								<option value="Chicken">Chicken</option>
-								<option value="Beef">Beef</option>
-								<option value="Pork">Pork</option>
-						   </select>
+						<option value="Lamb">Lamb</option>
+						<option value="Chicken">Chicken</option>
+						<option value="Beef">Beef</option>
+						<option value="Pork">Pork</option>
+				   </select>
 				</div>
 			</div>	
 
@@ -73,18 +96,19 @@
 					<label for="fname">Size</label>
 				</div>
                 <div class="col-75">
-                        <select name="size">
-                                    <option value="Small">Small</option>
-                                    <option value="Medium">Medium</option>
-                                    <option value="Large">Large</option>
-                            </select>
-				</div>
-			</div>
+					<select name="size">
+							<option value="Small">Small</option>
+							<option value="Medium">Medium</option>
+							<option value="Large">Large</option>
+					</select>
+				</div> 
+			</div>-->
 			
 			<span><button id="doCreateButton" onclick="doCreate()">Create</button></span>
 			<span><button id="doUpdateButton" onclick="doUpdate()">Update</button></span>
 		</div>	
 	</body>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	<script>
 	function showCreate(){
 		document.getElementById('showCreateButton').style.display="none"
