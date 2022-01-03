@@ -3,15 +3,15 @@
 		<title>Biscuits</title>
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
-		<link rel="stylesheet" href="grooming.css">
+		<link rel="stylesheet" href="Biscuitrepository.css">
 	</head>
 	
 	<body id="home">
         <nav class="menu">
 			<ul>
-				<li><a href="My%20Homepage.html">Home</a></li>
+				<li><a href="Homepage.html">Home</a></li>
 				<li><a href="contact.html">Contact</a></li>
-				<li><a href="login.html">Login</a></li>
+				<li><a href="Loginpage.html">Login</a></li>
 			</ul>
         </nav>
 	
@@ -46,20 +46,22 @@
 			
 		<form>
 			<div>
-				<label for="fname">Name</label><br>
+				<label for="name">Name</label><br>
 				<input type="text" name="name">
 			</div>
 			<div>
-				<label for="fname">Flavour</label><br>
+				<label for="name">Flavour</label><br>
 				<select name="flavour">
 					<option value="Lamb">Lamb</option>
 					<option value="Chicken">Chicken</option>
 					<option value="Beef">Beef</option>
 					<option value="Pork">Pork</option>
+					<option value="Turkey">Pork</option>
+					<option value="Veggie">Pork</option>
 			   </select>
 			</div>
 		   <div>
-			   <label for="fname">Size</label><br>
+			   <label for="name">Size</label><br>
 			   <select name="size">
 					<option value="Small">Small</option>
 					<option value="Medium">Medium</option>
@@ -143,31 +145,31 @@
 		document.getElementById('doUpdateButton').style.display="block"
 		
 		var rowElement = buttonElement.parentNode.parentNode
-		var Biscuits = getBiscuitsFromRow(rowElement)
-		populateFormWithBiscuits(Biscuits)
+		var Biscuit = getBiscuitFromRow(rowElement)
+		populateFormWithBiscuit(Biscuit)
 	}
 	function doCreate(){	
 		var form = document.getElementById('createUpdateForm')
 		
-		var biscuits = {}
-		biscuits.name = form.querySelector('input[name="name"]').value
-		biscuits.flavour =	form.querySelector('select[name="flavour"]').value
-		biscuits.size = form.querySelector('input[name="size"]').value
-		console.log(JSON.stringify(biscuits))
+		var biscuit = {}
+		biscuit.name = form.querySelector('input[name="name"]').value
+		biscuit.flavour =	form.querySelector('select[name="flavour"]').value
+		biscuit.size = form.querySelector('input[name="size"]').value
+		console.log(JSON.stringify(biscuit))
 		host=window.location.origin
 		
 			
 		
 			 $.ajax({
-						 "url": host+"/biscuits",
+						 "url": host+"/biscuit",
 						 "method":"POST",
-						 "data":JSON.stringify(biscuits),
+						 "data":JSON.stringify(biscuit),
 						 "dataType": "JSON",
 						 contentType: "application/json; charset=utf-8",
 						 "success":function(result){
 							console.log(result);
-							biscuits.id = result.id
-							addBiscuitsToTable(biscuits)
+							biscuit.id = result.id
+							addBiscuitToTable(biscuit)
 							clearForm()
 							showViewAll()
 							
@@ -182,13 +184,13 @@
 	}
 	
 	function doUpdate(){
-		var biscuits = getBiscuitsFromForm();
-		var rowElement = document.getElementById(biscuits.id);
+		var biscuit = getBiscuitFromForm();
+		var rowElement = document.getElementById(biscuit.id);
 		host=window.location.origin
 			$.ajax({
-                    "url":host+"biscuits/"+encodeURI(biscuits.id),
+                    "url":host+"biscuit/"+encodeURI(biscuit.id),
                     "method":"PUT",
-                    "data":JSON.stringify(biscuits),
+                    "data":JSON.stringify(biscuit),
                     "dataType": "JSON",
                     contentType: "application/json; charset=utf-8",
                     "success":function(result){
@@ -199,17 +201,17 @@
                         console.log("error: "+status+" msg:"+error);
                     }
 				 });
-		setBiscuitsInRow(rowElement, biscuits);
+		setBiscuitInRow(rowElement, biscuit);
 		clearForm();
 		showViewAll();
 	}
 	function doDelete(r){
-		var tableElement = document.getElementById('biscuitsTable');
+		var tableElement = document.getElementById('biscuitTable');
 		var rowElement = r.parentNode.parentNode;
 		var index = rowElement.rowIndex;
 		host=window.location.origin
 			$.ajax({
-						 "url":host+"/biscuits/"+encodeURI(artist.id),
+						 "url":host+"/biscuit/"+encodeURI(artist.id),
 						 "method":"DELETE",
 						 "data":"",
 						 "dataType": "JSON",
@@ -233,70 +235,70 @@
 		form.querySelector('select[name="flavour"]').value =''
 		form.querySelector('input[name="size"]').value =''
 	}
-	function addBiscuitsToTable(biscuits){
-		var tableElement = document.getElementById('BiscuitsTable')
+	function addBiscuitToTable(biscuit){
+		var tableElement = document.getElementById('BiscuitTable')
 		var rowElement = tableElement.insertRow(-1)
-		rowElement.setAttribute('id',biscuits.id)
+		rowElement.setAttribute('id',biscuit.id)
 		var cell1 = rowElement.insertCell(0);
-		cell1.innerHTML = biscuits.id
+		cell1.innerHTML = biscuit.id
 		var cell2 = rowElement.insertCell(1);
-		cell2.innerHTML = biscuits.name
+		cell2.innerHTML = biscuit.name
 		var cell3 = rowElement.insertCell(2);
-		cell3.innerHTML = biscuits.flavour
+		cell3.innerHTML = biscuit.flavour
 		var cell4 = rowElement.insertCell(3);
-		cell4.innerHTML = biscuits.size
+		cell4.innerHTML = biscuit.size
 		var cell5 = rowElement.insertCell(4);
 		cell5.innerHTML = '<button onclick="showUpdate(this)">Update</button>'
 		var cell6 = rowElement.insertCell(5);
 		cell6.innerHTML = '<button onclick="doDelete(this)">Delete</button>'
 	}
-	function getBiscuitsFromRow(rowElement){
-		var biscuits ={}
-		biscuits.id = rowElement.getAttribute('id')
-		biscuits.name = rowElement.cells[1].firstChild.textContent
-		biscuits.flavour = rowElement.cells[2].firstChild.textContent
-		biscuits.size = parseInt(rowElement.cells[3].firstChild.textContent,10)
-		return biscuits
+	function getBiscuitFromRow(rowElement){
+		var biscuit ={}
+		biscuit.id = rowElement.getAttribute('id')
+		biscuit.name = rowElement.cells[1].firstChild.textContent
+		biscuit.flavour = rowElement.cells[2].firstChild.textContent
+		biscuit.size = parseInt(rowElement.cells[3].firstChild.textContent,10)
+		return biscuit
 	}
-	function populateFormWithBiscuits(biscuits){
+	function populateFormWithBiscuit(biscuit){
 		var form = document.getElementById('createUpdateForm')
         form.querySelector('input[name="id"]').disabled = true
 		
-		form.querySelector('input[name="id"]').value = biscuits.id
-		form.querySelector('input[name="name"]').value = biscuits.name
-		form.querySelector('select[name="flavour"]').value = biscuits.flavour
-		form.querySelector('input[name="size"]').value = biscuits.size
-		return biscuits
+		form.querySelector('input[name="id"]').value = biscuit.id
+		form.querySelector('input[name="name"]').value = biscuit.name
+		form.querySelector('select[name="flavour"]').value = biscuit.flavour
+		form.querySelector('input[name="size"]').value = biscuit.size
+		return biscuit
 	}
-	function getBiscuitsFromForm(){
+	function getBiscuitFromForm(){
 		var form = document.getElementById('createUpdateForm')
-		var biscuits = {}
-		biscuits.id = form.querySelector('input[name="id"]').value
-		biscuits.name = form.querySelector('input[name="name"]').value
-		biscuits.flavour = form.querySelector('select[name="flavour"]').value
-		biscuits.size = parseInt(form.querySelector('input[name="size"]').value,10)
-		console.log(JSON.stringify(biscuits))
-		return biscuits
+		var biscuit = {}
+		biscuit.id = form.querySelector('input[name="id"]').value
+		biscuit.name = form.querySelector('input[name="name"]').value
+		biscuit.flavour = form.querySelector('select[name="flavour"]').value
+		biscuit.size = parseInt(form.querySelector('input[name="size"]').value,10)
+		console.log(JSON.stringify(biscuit))
+		return biscuit
 	}
-	function setBiscuitsInRow(rowElement, biscuits){
-		rowElement.cells[0].firstChild.textContent= biscuits.id
-		rowElement.cells[1].firstChild.textContent= biscuits.name
-		rowElement.cells[2].firstChild.textContent= biscuits.flavour
-		rowElement.cells[3].firstChild.textContent= biscuits.size
+	function setBiscuitInRow(rowElement, biscuit){
+		rowElement.cells[0].firstChild.textContent= biscuit.id
+		rowElement.cells[1].firstChild.textContent= biscuit.name
+		rowElement.cells[2].firstChild.textContent= biscuit.flavour
+		rowElement.cells[3].firstChild.textContent= biscuit.size
 	
 	}
 	
 	function getAll(){
 	host=window.location.origin
                 $.ajax({
-                    "url": host+"/biscuits",
+                    "url": host+"/biscuit",
                     "method": "GET",
                     "data": "",
                     "dataType": "JSON",
                     "success": function (result) {
                         //console.log(result);
-                        for(biscuits of result){
-                            addBiscuitsToTable(artist);
+                        for(biscuit of result){
+                            addBiscuitToTable(biscuit);
                         }
                     },
                     "error": function (xhr, status, error) {
