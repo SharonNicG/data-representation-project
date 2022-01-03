@@ -1,4 +1,6 @@
+# Hanldes functions for data tables data
 import mysql.connector 
+# dbconfig file contains the host, user, password and database details
 import dbconfig as cfg
 
 class BiscuitsDAO:     
@@ -6,7 +8,7 @@ class BiscuitsDAO:
 	def connectToDB(self):
 		self.db = mysql.connector.connect(
 			host=cfg.mysql['host'],
-			username=cfg.mysql['username'],
+			user=cfg.mysql['user'],
 			password=cfg.mysql['password'],
 			database=cfg.mysql['database']
 		)
@@ -17,71 +19,107 @@ class BiscuitsDAO:
 		if not self.db.is_connected():
 			self.connectToDB()
 		return self.db.cursor()
-		
-	def create (self, values):
+
+	# Create new biscuit	
+	def create(self, biscuit):
 		cursor = self.getCursor()
-		sql="insert into biscuitinfo (Biscuit_Name, Biscuit_Flavour, Biscuit_Size) values (%s, %s, %s, %s)"
+		sql="insert into biscuits (id, name, flavour, size) values (%s, %s, %s, %s)"
+		values = [
+			biscuit['id'], biscuit['name'], 
+			biscuit['flavour'], biscuit['size']
+		]
 		cursor.execute(sql, values)
-
 		self.db.commit()
-		lastRowId=cursor.lastrowid
 		cursor.close()
-
-		return lastrowid
-		
+		return cursor.lastrowid
+	
+	# Get all the biscuits
 	def getAll(self):
-		cursor = self.db.Cursor()
-		sql="select * from biscuitinfo"
+		cursor = self.getCursor()
+		sql="select * from biscuits"
 		cursor.execute(sql)
 		results = cursor.fetchall()
-
 		returnArray = []
 		for result in results:
-			print(result)
-			returnArray.append(self.convertToDictionary(result))
+			resultAsDict = self.convertToDict(result)
+			returnArray.append(resultAsDict)
 		cursor.close()
-		
 		return returnArray
 
-    def findByID(self, id):
-        cursor = self.db.Cursor()
-        sql="select * from biscuitinfo where id = %s"
-        values = (id,)
-        cursor.execute(sql, values)
-        
-        result = cursor.fetchone()
-        biscuit.self.convertToDictionary(result)
-        cursor.close()
-        return self.convertToDictionary(result)
+	# Find a biscuit by ID
+	def findByID(self, id):
+		cursor = self.getCursor()
+		sql="select * from biscuitinfo where id = %s"
+		values = [id]
+		cursor.execute(sql, values)
+		result = cursor.fetchone()
+		cursor.close()
+		return self.convertToDict(result)
 
-    def update(self, values):
-        cursor = self.db.cursor()
-        sql="update biscuitinfo set Biscuit_Name= %s, Biscuit_Flavour= %s, Biscuit_Size= %s where id= %s"
-        cursor.execute(sql, values)
-        self.db.commit()
-        cursor.close()
+	# Find all biscuits by a particular name
+	def findByID(self, name):
+		cursor = self.getCursor()
+		sql="select * from biscuitinfo where name = %s"
+		values = [name]
+		cursor.execute(sql, values)
+		result = cursor.fetchall()
+		cursor.close()
+    	return self.convertToDict(result)
 
-	def delete(self, id):
-		cursor = self.db.cursor()	
-		sql="delete from biscuitinfo where id = %s"
-		values = (id,)
-		
+	# Find all biscuit by particular flavour
+	def findByID(self, flavour):
+		cursor = self.getCursor()
+		sql="select * from biscuitinfo where flavour = %s"
+		values = [flavour]
+		cursor.execute(sql, values)
+		result = cursor.fetchall()
+		cursor.close()
+    	return self.convertToDict(result)
+
+	# Find all biscuit by particular size
+	def findByID(self, size):
+		cursor = self.getCursor()
+		sql="select * from biscuitinfo where size = %s"
+		values = [size]
+		cursor.execute(sql, values)
+		result = cursor.fetchall()
+		cursor.close()
+    	return self.convertToDict(result)
+	
+	# Update a biscuit
+	def update(self, biscuit):
+		cursor = self.getCursor()
+		sql="update biscuit set name= %s, flavour= %s, size= %s where id= %s"
+		values = [
+			biscuit['id'], biscuit['name'], 
+			biscuit['flavour'], biscuit['size']
+		]
 		cursor.execute(sql, values)
 		self.db.commit()
 		cursor.close()
-		print("delete done")
+		return biscuit
 
-	def convertToDictionary(self, result):
-		colnames=['id', 'Biscuit_Name', 'Biscuit_Flavour', 'Biscuit_Size']
-		print(colnames)
-		item = {}
+	# Delete a biscuit based on its ID
+	def delete(self, id):
+		cursor = self.getCursor()	
+		sql="delete from biscuit where id = %s"
+		values = [id]
+		cursor.execute(sql, values)
+		self.db.commit()
+		cursor.close()
+		return {}
+		print("Deleted")
+
+	# Convert list to a dictionary
+	def convertToDict(self, result):
+		colnames=['id', 'name', 'flavour', 'size']
+		biscuit = {}
 		
 		if result: #if result is not empty do this..
 			for i, colName in enumerate(colnames):
-				print(colName)
 				value = result[i]
-				item[colName] = value
-		
-		return item
+				biscuit[colName] = value
+		return biscuit
 
-BiscuitsDAO = BiscuitsDAO()
+# Instantiate BiscuitsDAO
+biscuitsDAO = BiscuitsDAO()
