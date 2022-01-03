@@ -27,6 +27,15 @@ app.config['MYSQL_DB'] = 'biscuits'
 # Initiatie MYSQL
 mysql = MySQL(app)
 
+# Authorise User Login
+# https://pythonbasics.org/flask-sessions/
+# https://flask.palletsprojects.com/en/2.0.x/quickstart/
+@app.route('/')
+def root():
+    if not 'username' in session:
+        return redirect(url_for('login'))
+    return render_template('index.html')
+
 # Use method Get and POST for Login
 # https://realpython.com/introduction-to-flask-part-2-creating-a-login-page/
 # https://flask-login.readthedocs.io/en/latest/
