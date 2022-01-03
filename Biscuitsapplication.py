@@ -1,18 +1,38 @@
 #!flask/bin/python
 
 # Import necessay libraries 
-from flask import Flask, jsonify,  request, abort, make_response, render_template, redirect, url_for, request
+from flask import Flask, jsonify, request, abort, make_response, render_template, redirect, url_for, flash, session
+from flask_mysqldb import MySQL
+import requests
+import json
+import MySQLdb.cursors
+import mysql.connector
+from mysql.connector import cursor
+import dbconfig as cfg
 from wtforms import Form, TextField, TextAreaField, validators, StringField, SubmitField
 from BiscuitsDAO import BiscuitsDAO
 
-app = Flask(__name__, static_url_path='', static_folder='.')
+# Create Flask app
+app = Flask(__name__, static_url_path='', static_folder='staticpages')
 
-nextId=3
+# Set random secret key
+# https://newbedev.com/where-do-i-get-a-secret-key-for-flask
+app.secret_key = 'lodr904eclb2gsvw'
+
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = 'root'
+app.config['MYSQL_DB'] = 'biscuits'
+
+#init MYSQL
+mysql = MySQL(app)
 
 # Use method GET to get all data
 # curl -i http://localhost:5000/biscuits
 @app.route('/biscuits')
 def getAll():
+    if not 'username' in session:
+        abort(401)
     results = BiscuitsDAO.getAll()
     return jsonify(results)
 
@@ -20,6 +40,8 @@ def getAll():
 # curl -i http://localhost:5000/biscuits/1
 @app.route('/biscuits/<int:id>', methods =['GET'])
 def findByID(id):
+    if not 'username' in session:
+        abort(401)
     foundBiscuits = BiscuitsDAO.findByID(id)
     return jsonify(foundBiscuits)
 
@@ -30,22 +52,23 @@ def createbiscuit():
     if not request.json:
         abort(400)
         
-    biscuits = {
+    biscuit = {
+        "id": request.json["id"],
         "name": request.json['name'],
         "flavour": request.json['flavour'],
         "size": request.json['size']
     }
-    features = (biscuits['name'],biscuits['flavour'],biscuits['size'])
+    features = (biscuit['name'],biscuit['flavour'],biscuit['size'])
     newId = BiscuitsDAO.create(features)
-    biscuits['id'] = newId
+    biscuit['id'] = newId
     
-    return jsonify(biscuits),201
+    return jsonify(biscuit),201
 
 # Use method PUT to dataset 
 @app.route('/biscuits/<int:id>', methods =['PUT'])
 def updatebiscuit(id):
-    foundBiscuits = BiscuitsDAO.findByID(id)
-    if (len(foundBiscuits) == 0):
+    foundBiscuit = BiscuitsDAO.findByID(id)
+    if (len(foundBiscuit) == 0):
         abort(404)
     
     if not request.json:
@@ -53,15 +76,15 @@ def updatebiscuit(id):
     reqJson = request.json
         
     if 'name' in reqJson:
-        foundBiscuits['name'] = reqJson['name']
+        foundBiscuit['name'] = reqJson['name']
     if 'flavour' in reqJson:
-        foundBiscuits['flavour'] = reqJson['flavour']
+        foundBiscuit['flavour'] = reqJson['flavour']
     if 'size' in reqJson:
-        foundBiscuits['size'] = reqJson['size']
+        foundBiscuit['size'] = reqJson['size']
     
-    features = (foundBiscuits['name'],foundBiscuits['flavour'],foundBiscuits['size'], foundBiscuits['id'])
+    features = (foundBiscuit['name'],foundBiscuit['flavour'],foundBiscuit['size'], foundBiscuit['id'])
     BiscuitsDAO.update(features)
-    return jsonify(foundBiscuits)
+    return jsonify(foundBiscuit)
 
 # Use method DELETE to delete dataset
 @app.route('/biscuits/<int:id>', methods =['DELETE'])
