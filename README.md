@@ -4,7 +4,7 @@ The objective of this project was to write a program that demonstrates an unders
 I have chosen a simple system that allows users to record the biscuits they give their dog - inspired by Pliny, my Jack Russell/Chihuahua cross that sits at my feet while I work and loves treats.
 
 <p align="center">
-  <img src="https://github.com/SharonNicG/data-representation-project/blob/main/Pliny_JR.jpg"/>
+  <img src="https://github.com/SharonNicG/data-representation-project/blob/main/Pliny_JR.jpg", width=\"450\/>
 </p>
 
 Table of Contents
@@ -14,6 +14,8 @@ Table of Contents
   - [Requirements](#requirements)
   - [MySQL Database](#mysql-database)
   - [Launching the Server](#launching-the-server)
+  - [Virtual Environment](#virtual-environment)
+  - [Credits](#credits)
 
 ## Project Overview
 This project can be accessed from the machine command line.
@@ -34,14 +36,32 @@ The data on the webpage is drawn from a MySQL Database. Information from the dat
 ## Requirements
 The [requirements.txt](https://github.com/SharonNicG/data-representation-project/blob/main/requirements.txt) file details the packages used to develop the project. *Note: some of these may now be redundant as there have been changes in the script.*
 
+
 ## MySQL Database
 An instance of the [initdb.sql](https://github.com/SharonNicG/data-representation-project/blob/main/initdb.sql) MySQL Database needs to be created for the project to run.
 
-Thsi can be done via the bin folder of your [MySQL server](https://dev.mysql.com/downloads/mysql/) using teh command `mysql -u root -p < "C:\path\to\directory\data-representation-project/blob/main/initdb.sql"`
+This can be done via the bin folder of your [MySQL server](https://dev.mysql.com/downloads/mysql/) using teh command `mysql -u root -p < "C:\path\to\directory\data-representation-project/blob/main/initdb.sql"`
 
 Or in a [MySQL terminal](https://dev.mysql.com/doc/mysql-getting-started/en/) with the command `source "C:\path\to\directory\data-representation-project\Database\G00387816_DataRepProject.sql"`
 
 ## Launching the Server
-The Flask server [Biscuitsapplication.py](https://github.com/SharonNicG/data-representation-project/blob/main/Biscuitsapplication.py) can be running using the command `python Biscuitsapplication.py` from the machine command line.
+The Flask server [Biscuitsapplication.py](https://github.com/SharonNicG/data-representation-project/blob/main/Biscuitsapplication.py) can be run using the command `python Biscuitsapplication.py` from the machine command line.
 
-Once the server is running, you will be directed to a local web page to interact with the database. 
+Once the server runs, you will be directed to a local web page to interact with the database. To stop the server, press `ctrl + c`.
+
+## Virtual Environment
+
+The project can also run via the machine command line via a virtual environment.
+
+First, the virtual environment is created with the` python -m venv venv` command. Next, the environment is run using `.\venv\Scripts\activate.bat` for Windows users or `source venv/bin/activate` on Mac/Linux.
+
+The packages detailed in [requirements.txt](https://github.com/SharonNicG/data-representation-project/blob/main/requirements.txt) need to be loaded into the environment using the command `pip install -r requirements.txt`.
+
+The server environment needs to be set for Flask using the `set FLASK_APP=app` command for Windows users or `export FLASK_APP=app` on Mac/Linux.
+
+The Flask server [Biscuitsapplication.py](https://github.com/SharonNicG/data-representation-project/blob/main/Biscuitsapplication.py) can be run using the command `flask run`. Once the server runs, you will be directed to a local web page to interact with the database. To stop the server, press `ctrl + c`.
+
+***
+
+## Credits
+ - Andrew Beatty – Lecture materials : https://learnonline.gmit.ie/course/view.php?id=3299
