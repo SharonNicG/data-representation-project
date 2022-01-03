@@ -1,13 +1,13 @@
 #!flask/bin/python
 
-# Import necessay libraries 
+# Import necessary libraries 
 from flask import Flask, jsonify, request, abort, make_response, render_template, redirect, url_for, flash, session
 from flask_mysqldb import MySQL
 import requests
-import json
+import JSON
 import MySQLdb.cursors
-import mysql.connector
-from mysql.connector import cursor
+import MySQL.connector
+from MySQL.connector import cursor
 import dbconfig as cfg
 from wtforms import Form, TextField, TextAreaField, validators, StringField, SubmitField
 from BiscuitsDAO import BiscuitsDAO
@@ -24,8 +24,42 @@ app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'root'
 app.config['MYSQL_DB'] = 'biscuits'
 
-#init MYSQL
+# Initiatie MYSQL
 mysql = MySQL(app)
+
+# Use method Get and POST for Login
+# https://realpython.com/introduction-to-flask-part-2-creating-a-login-page/
+# https://flask-login.readthedocs.io/en/latest/
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    error = ''
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
+        username = request.form['username']
+        cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cur.execute("select username,pass from users where username=%s", [username])
+        user = cur.fetchone()
+        if user:
+            session['loggedin'] = True
+            session['username'] = user['username']
+            return render_template('Homepage.html', username=username)
+        else:
+            flash('Invalid Details. Please Try Again.')
+            return render_template('Loginpage.html')
+    else:
+        return render_template('Loginpage.html')
+
+# Logging Out
+@app.route('/logout')
+def logout():
+    session.clear()
+    return render_template('Loginpage.html')
+
+# Homepage
+@app.route('/homepage')
+def home():
+    if not 'username' in session:
+        return redirect(url_for('login'))
+    return render_template('Homepage.html')
 
 # Use method GET to get all data
 # curl -i http://localhost:5000/biscuits
@@ -46,7 +80,7 @@ def findByID(id):
     return jsonify(foundBiscuits)
 
 # Use method POST to input new data 
-# curl -i -H "Content-Type:application/json" -X POST -d "{\"name\":\"Sunday Treat\",\"flavour\":\"Lamb\",\"size\":\"Medium\""}" http://localhost:5000/biscuits
+# curl -i -H "Content-Type:application/json" -X POST -d "{\"name\":\"Christmas\",\"flavour\":\"Turkey\",\"size\":\"Large\""}" http://localhost:5000/biscuits
 @app.route('/biscuits', methods=['POST'])
 def createbiscuit():
     if not request.json:
@@ -70,18 +104,15 @@ def updatebiscuit(id):
     foundBiscuit = BiscuitsDAO.findByID(id)
     if (len(foundBiscuit) == 0):
         abort(404)
-    
     if not request.json:
         abort(400)
     reqJson = request.json
-        
     if 'name' in reqJson:
         foundBiscuit['name'] = reqJson['name']
     if 'flavour' in reqJson:
         foundBiscuit['flavour'] = reqJson['flavour']
     if 'size' in reqJson:
         foundBiscuit['size'] = reqJson['size']
-    
     features = (foundBiscuit['name'],foundBiscuit['flavour'],foundBiscuit['size'], foundBiscuit['id'])
     BiscuitsDAO.update(features)
     return jsonify(foundBiscuit)
@@ -90,31 +121,7 @@ def updatebiscuit(id):
 @app.route('/biscuits/<int:id>', methods =['DELETE'])
 def deleteBiscuits(id):
     BiscuitsDAO.delete(id)
-        
-    return  jsonify( { 'Completed':True })
-
-# Use method Get and POST for Login
-@app.route('/login/', methods=["GET","POST"])
-def login_page():
-
-    error = ''
-    try:
-	
-        if request.method == "POST":
-		
-            attempted_username = request.form['username']
-            attempted_password = request.form['password']
-
-            if attempted_username == "admin" and attempted_password == "password":
-                return redirect(url_for('dashboard'))				
-            else:
-                error = "Invalid. Try Again."
-
-        return render_template("login.html", error = error)
-
-    except Exception as e:
-        return render_template("login.html", error = error)  
-		
+    return  jsonify( { 'Completed':True })       
 
 # Error Handling
 @app.errorhandler(400)
