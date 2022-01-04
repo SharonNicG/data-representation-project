@@ -56,8 +56,8 @@
 					<option value="Chicken">Chicken</option>
 					<option value="Beef">Beef</option>
 					<option value="Pork">Pork</option>
-					<option value="Turkey">Pork</option>
-					<option value="Veggie">Pork</option>
+					<option value="Turkey">Turkey</option>
+					<option value="Veggie">Veggie</option>
 			   </select>
 			</div>
 		   <div>
@@ -89,6 +89,8 @@
 						<option value="Chicken">Chicken</option>
 						<option value="Beef">Beef</option>
 						<option value="Pork">Pork</option>
+						<option value="Turkey">Turkey</option>
+						<option value="Veggie">Veggie</option>
 				   </select>
 				</div>
 			</div>	
@@ -122,8 +124,7 @@
 		
 		document.getElementById('doCreateButton').style.display="block"
 		document.getElementById('doUpdateButton').style.display="none"
-	}
-	
+	}	
 	
 	function showViewAll() {
 		document.getElementById('showCreateButton').style.display="block"
@@ -145,8 +146,8 @@
 		document.getElementById('doUpdateButton').style.display="block"
 		
 		var rowElement = buttonElement.parentNode.parentNode
-		var Biscuit = getBiscuitFromRow(rowElement)
-		populateFormWithBiscuit(Biscuit)
+		var biscuit = getBiscuitFromRow(rowElement)
+		populateFormWithBiscuit(biscuit)
 	}
 	function doCreate(){	
 		var form = document.getElementById('createUpdateForm')
@@ -156,9 +157,7 @@
 		biscuit.flavour =	form.querySelector('select[name="flavour"]').value
 		biscuit.size = form.querySelector('input[name="size"]').value
 		console.log(JSON.stringify(biscuit))
-		host=window.location.origin
-		
-			
+		host=window.location.origin	
 		
 			 $.ajax({
 						 "url": host+"/biscuit",
@@ -178,9 +177,7 @@
 						 "error":function(xhr,status,error){
 							console.log("error: "+status+" msg:"+error);
 					 }
-				 });
-		
-		
+				 });	
 	}
 	
 	function doUpdate(){
@@ -226,7 +223,6 @@
 				 });
 		tableElement.deleteRow(index);
 	}
-	
 	
 	function clearForm(){
 		var form = document.getElementById('createUpdateForm')
@@ -285,7 +281,6 @@
 		rowElement.cells[1].firstChild.textContent= biscuit.name
 		rowElement.cells[2].firstChild.textContent= biscuit.flavour
 		rowElement.cells[3].firstChild.textContent= biscuit.size
-	
 	}
 	
 	function getAll(){
@@ -307,8 +302,6 @@
                 });
             }
     getAll();
-	
-	
 	
 	</script>
 </html>
