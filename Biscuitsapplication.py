@@ -71,7 +71,6 @@ def home():
     return render_template('Homepage.html')
 
 # Use method GET to get all data
-# curl -i http://localhost:5000/biscuits
 @app.route('/biscuits')
 def getAll():
     if not 'username' in session:
@@ -80,7 +79,6 @@ def getAll():
     return jsonify(results)
 
 # Use method GET to find data by id 
-# curl -i http://localhost:5000/biscuits/1
 @app.route('/biscuits/<int:id>', methods =['GET'])
 def findByID(id):
     if not 'username' in session:
@@ -89,7 +87,6 @@ def findByID(id):
     return jsonify(foundBiscuits)
 
 # Use method POST to input new data 
-# curl -i -H "Content-Type:application/json" -X POST -d "{\"name\":\"Christmas\",\"flavour\":\"Turkey\",\"size\":\"Large\""}" http://localhost:5000/biscuits
 @app.route('/biscuits', methods=['POST'])
 def createbiscuit():
     if not request.json:

@@ -49,7 +49,7 @@ class BiscuitsDAO:
 	# Find a biscuit by ID
 	def findByID(self, id):
 		cursor = self.getCursor()
-		sql="select * from biscuitinfo where id = %s"
+		sql="select * from biscuits where id = %s"
 		values = [id]
 		cursor.execute(sql, values)
 		result = cursor.fetchone()
@@ -59,32 +59,32 @@ class BiscuitsDAO:
 	# Find all biscuits by a particular name
 	def findByID(self, name):
 		cursor = self.getCursor()
-		sql="select * from biscuitinfo where name = %s"
+		sql="select * from biscuits where name = %s"
 		values = [name]
 		cursor.execute(sql, values)
 		result = cursor.fetchall()
 		cursor.close()
-    	return self.convertToDict(result)
+		return self.convertToDict(result)
 
 	# Find all biscuit by particular flavour
 	def findByID(self, flavour):
 		cursor = self.getCursor()
-		sql="select * from biscuitinfo where flavour = %s"
+		sql="select * from biscuits where flavour = %s"
 		values = [flavour]
 		cursor.execute(sql, values)
 		result = cursor.fetchall()
 		cursor.close()
-    	return self.convertToDict(result)
+		return self.convertToDict(result)
 
 	# Find all biscuit by particular size
 	def findByID(self, size):
 		cursor = self.getCursor()
-		sql="select * from biscuitinfo where size = %s"
+		sql="select * from biscuits where size = %s"
 		values = [size]
 		cursor.execute(sql, values)
 		result = cursor.fetchall()
 		cursor.close()
-    	return self.convertToDict(result)
+		return self.convertToDict(result)
 	
 	# Update a biscuit
 	def update(self, biscuit):
@@ -122,4 +122,4 @@ class BiscuitsDAO:
 		return biscuit
 
 # Instantiate BiscuitsDAO
-biscuitsDAO = BiscuitsDAO()
+BiscuitsDAO = BiscuitsDAO()

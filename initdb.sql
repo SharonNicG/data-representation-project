@@ -3,16 +3,16 @@ CREATE DATABASE biscuits;
 USE biscuits;
 
 CREATE TABLE users (
-    id int(11) NOT NULL AUTO_INCREMENT,
+    id int NOT NULL AUTO_INCREMENT,
     username VARCHAR (250),
     pass VARCHAR (250),
     PRIMARY KEY(id));
 
 INSERT INTO users (username, pass)
-Values ( 'user1', 'pass1');
+Values ('user1', 'pass1');
 
 INSERT INTO users (username, pass)
-Values ( 'user2', 'pass2');
+Values ('user2', 'pass2');
 
 CREATE TABLE biscuits (
     id int(250) NOT NULL,
